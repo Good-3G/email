@@ -3,15 +3,15 @@
 ### Requirements:
 
 - IMAP server access. For Gmail:
-	- Enable IMAP [1.0]
-	- Enable direct IMAP access (without an OAuth 2.0 layer) [1.1]
-	- Configure which labels show up in IMAP [1.2]
+	- Enable IMAP [1]
+	- Enable direct IMAP access (without an OAuth 2.0 layer) [2]
+	- Configure which labels show up in IMAP [3]
 - PHP7
 - enabled php_mbstring
 - enabled php_imap
-- enabled php_mailparse [2]
-- enabled php_pdo_sqlite that's FTS5-capable (can be grabbed from recent PHP7 snapshot builds [3])
-- installed html2text/html2text [4]
+- enabled php_mailparse [4]
+- enabled php_pdo_sqlite that's FTS5-capable (can be grabbed from recent PHP7 snapshot builds [5])
+- installed html2text/html2text [6]
 
 
 ### Usage
@@ -21,14 +21,9 @@
 0. `php import.php`
 
 
-[1.0] https://mail.google.com/mail/u/0/#settings/fwdandpop
-
-[1.1] https://www.google.com/settings/security/lesssecureapps
-
-[1.2] https://mail.google.com/mail/u/0/#settings/labels
-
-[2] https://pecl.php.net/package/mailparse
-
-[3] http://windows.php.net/snapshots/#php-7.0
-
-[4] https://packagist.org/packages/html2text/html2text
+[1] https://mail.google.com/mail/u/0/#settings/fwdandpop
+[2] https://www.google.com/settings/security/lesssecureapps
+[3] https://mail.google.com/mail/u/0/#settings/labels
+[4] https://pecl.php.net/package/mailparse
+[5] http://windows.php.net/snapshots/#php-7.0
+[6] https://packagist.org/packages/html2text/html2text
