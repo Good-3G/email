@@ -2,7 +2,7 @@
 
 set_time_limit(1800);
 
-require '../vendor/autoload.php';
+require 'vendor/autoload.php';
 
 require 'ImapSqlite.php';
 require 'MimeParser.php';
