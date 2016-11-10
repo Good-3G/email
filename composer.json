@@ -1,0 +1,6 @@
+{
+    "minimum-stability": "dev",
+    "require": {
+        "html2text/html2text": "*"
+    }
+}
