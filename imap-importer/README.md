@@ -22,8 +22,13 @@
 
 
 [1.0] https://mail.google.com/mail/u/0/#settings/fwdandpop
+
 [1.1] https://www.google.com/settings/security/lesssecureapps
+
 [1.2] https://mail.google.com/mail/u/0/#settings/labels
+
 [2] https://pecl.php.net/package/mailparse
+
 [3] http://windows.php.net/snapshots/#php-7.0
+
 [4] https://packagist.org/packages/html2text/html2text
