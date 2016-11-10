@@ -21,9 +21,9 @@
 0. `php import.php`
 
 
-[1] https://mail.google.com/mail/u/0/#settings/fwdandpop
-[2] https://www.google.com/settings/security/lesssecureapps
-[3] https://mail.google.com/mail/u/0/#settings/labels
-[4] https://pecl.php.net/package/mailparse
-[5] http://windows.php.net/snapshots/#php-7.0
-[6] https://packagist.org/packages/html2text/html2text
+[1] https://mail.google.com/mail/u/0/#settings/fwdandpop  
+[2] https://www.google.com/settings/security/lesssecureapps  
+[3] https://mail.google.com/mail/u/0/#settings/labels  
+[4] https://pecl.php.net/package/mailparse  
+[5] http://windows.php.net/snapshots/#php-7.0  
+[6] https://packagist.org/packages/html2text/html2text  
