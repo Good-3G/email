@@ -78,22 +78,14 @@ function fetchMail($db, $threads) {
 		fetchBox($box, $db, $threads, FETCH_QTY);
 }
 
-function fetchBox($path, &$db, &$threads, $last = 200) {
+// this exists to reset the imap connection every $batch_size messages because imap_fetchbody leaks memory >:(
+function fetchBoxPartial($path, $db, &$threads, &$uids, $idx, $batch_size, $full_qty) {
 	$imap = imap_open(IMAP_ROOT . $path, IMAP_USER, IMAP_PASS);
-//	imap_sort($imap, SORTARRIVAL, 1);
-//	imap_fetch_overview
-	$count = imap_num_msg($imap);
 
-	$last = min($last, $count);
+	for ($j = 0; $j < $batch_size; $j++) {
+		log2($idx + 1 . " / $full_qty (#$uids[$idx])");
 
-	log2("Fetching last $last msgs from $path ($count total)...");
-
-	// TODO: a mem leak lives here, investigate unset($parser)? unset($parser->parts)? imap release?
-	$j = 0;
-	for ($i = $count; $i > $count - $last; $i--) {
-		log2(++$j . " / $last (#$i)", true);
-
-		$raw = imap_fetchbody($imap, $i, "", FT_PEEK);
+		$raw = imap_fetchbody($imap, $uids[$idx++], "", FT_UID | FT_PEEK);
 
 		$parser = new MemParser($raw);
 
@@ -117,13 +109,39 @@ function fetchBox($path, &$db, &$threads, $last = 200) {
 			file_put_contents("$path/raw.eml", $raw);
 		}
 
-		$parser->free();
+	//	unset($raw);
+	//	$parser->free();
+	//	unset($parser);
 
 		/*
 		$header = imap_headerinfo($imap, $i);
 		$raw_body = imap_body($imap, $i);
 		print_r($header);
 		*/
+	}
+
+	imap_close($imap);
+}
+
+function fetchBox($path, &$db, &$threads, $full_qty = 200) {
+	$imap = imap_open(IMAP_ROOT . $path, IMAP_USER, IMAP_PASS);
+	$uids = imap_sort($imap, SORTARRIVAL, 1, SE_UID | SE_NOPREFETCH);
+
+	$total = imap_num_msg($imap);
+
+	$full_qty = min($full_qty, $total);
+
+	log2("Fetching last $full_qty msgs from $path ($total total)...");
+
+	imap_close($imap);
+
+	// download in batches with imap reconnects cause imap_fetchbody leaks mem
+	$idx = 0;
+	$batch_size = 100;
+
+	while ($idx < $full_qty) {
+		fetchBoxPartial($path, $db, $threads, $uids, $idx, $batch_size, $full_qty);
+		$idx += $batch_size;
 	}
 
 	echo "\n";
