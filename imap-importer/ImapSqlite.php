@@ -83,7 +83,7 @@ function fetchBoxPartial($path, $db, &$threads, &$uids, $idx, $batch_size, $full
 	$imap = imap_open(IMAP_ROOT . $path, IMAP_USER, IMAP_PASS);
 
 	for ($j = 0; $j < $batch_size; $j++) {
-		log2($idx + 1 . " / $full_qty (#$uids[$idx])");
+		log2($idx + 1 . " / $full_qty (#$uids[$idx])", true);
 
 		$raw = imap_fetchbody($imap, $uids[$idx++], "", FT_UID | FT_PEEK);
 
