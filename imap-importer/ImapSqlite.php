@@ -78,14 +78,22 @@ function fetchMail($db, $threads) {
 		fetchBox($box, $db, $threads, FETCH_QTY);
 }
 
-// this exists to reset the imap connection every $batch_size messages because imap_fetchbody leaks memory >:(
-function fetchBoxPartial($path, $db, &$threads, &$uids, $idx, $batch_size, $full_qty) {
+function fetchBox($path, &$db, &$threads, $full_qty = 200) {
 	$imap = imap_open(IMAP_ROOT . $path, IMAP_USER, IMAP_PASS);
+	$uids = imap_sort($imap, SORTARRIVAL, 1, SE_UID | SE_NOPREFETCH);
 
-	for ($j = 0; $j < $batch_size; $j++) {
-		log2($idx + 1 . " / $full_qty (#$uids[$idx])", true);
+	$total = imap_num_msg($imap);
 
-		$raw = imap_fetchbody($imap, $uids[$idx++], "", FT_UID | FT_PEEK);
+	$full_qty = min($full_qty, $total);
+
+	log2("Fetching last $full_qty msgs from $path ($total total)...");
+
+	for ($idx = 0; $idx < $full_qty; $idx++) {
+		$uid = $uids[$idx];
+
+		log2($idx + 1 . " / $full_qty (#$uid)", true);
+
+		$raw = imap_fetchbody($imap, $uid, "", FT_UID | FT_PEEK);
 
 		$parser = new MemParser($raw);
 
@@ -109,9 +117,7 @@ function fetchBoxPartial($path, $db, &$threads, &$uids, $idx, $batch_size, $full
 			file_put_contents("$path/raw.eml", $raw);
 		}
 
-	//	unset($raw);
-	//	$parser->free();
-	//	unset($parser);
+		imap_gc($imap, IMAP_GC_ELT | IMAP_GC_ENV | IMAP_GC_TEXTS);
 
 		/*
 		$header = imap_headerinfo($imap, $i);
@@ -121,28 +127,6 @@ function fetchBoxPartial($path, $db, &$threads, &$uids, $idx, $batch_size, $full
 	}
 
 	imap_close($imap);
-}
-
-function fetchBox($path, &$db, &$threads, $full_qty = 200) {
-	$imap = imap_open(IMAP_ROOT . $path, IMAP_USER, IMAP_PASS);
-	$uids = imap_sort($imap, SORTARRIVAL, 1, SE_UID | SE_NOPREFETCH);
-
-	$total = imap_num_msg($imap);
-
-	$full_qty = min($full_qty, $total);
-
-	log2("Fetching last $full_qty msgs from $path ($total total)...");
-
-	imap_close($imap);
-
-	// download in batches with imap reconnects cause imap_fetchbody leaks mem
-	$idx = 0;
-	$batch_size = 100;
-
-	while ($idx < $full_qty) {
-		fetchBoxPartial($path, $db, $threads, $uids, $idx, $batch_size, $full_qty);
-		$idx += $batch_size;
-	}
 
 	echo "\n";
 }
