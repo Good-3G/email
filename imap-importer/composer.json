@@ -1,6 +1,15 @@
 {
-    "minimum-stability": "dev",
-    "require": {
-        "html2text/html2text": "*"
-    }
+	"minimum-stability": "dev",
+	"prefer-stable": false,
+	"require": {
+		"php": ">=7.1.0",
+		"ext-iconv": "*",
+		"ext-mbstring": "*",
+		"ext-imap": "*",
+		"ext-pdo_sqlite": "*",
+		"ext-mailparse": "*",
+		"html2text/html2text": "*",
+		"leeoniya/dump-r": "dev-master",
+		"riverline/multipart-parser": "dev-master"
+	}
 }
